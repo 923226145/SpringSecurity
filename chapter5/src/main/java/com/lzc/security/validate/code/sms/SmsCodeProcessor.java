@@ -8,7 +8,7 @@ import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 
 @Component("smsCodeProcessor")
-public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode> {
+public class SmsCodeProcessor extends AbstractValidateCodeProcessor<SmsCode> {
 
     private static final String SMS_CODE_PARAM_NAME = "mobile";
 
@@ -16,7 +16,7 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
     private SmsCodeSender smsCodeSender;
 
     @Override
-    protected void send(ServletWebRequest request, ValidateCode validateCode) throws Exception {
+    protected void send(ServletWebRequest request, SmsCode validateCode) throws Exception {
         String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(), SMS_CODE_PARAM_NAME);
         smsCodeSender.send(mobile, validateCode.getCode());
     }
