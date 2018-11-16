@@ -16,9 +16,9 @@ import java.util.List;
 public class MyUserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        //  通过用户名s去数据库里查找用户以及用户权限
-        // 然后返回User对象，注意，这里的User对象是org.springframework.security.core.userdetails.User
-        // return new User(s,new BCryptPasswordEncoder().encode("123456"),AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN,ROLE_USER"));
+          //通过用户名s去数据库里查找用户以及用户权限
+          // 然后返回User对象，注意，这里的User对象是org.springframework.security.core.userdetails.User
+         // return new User(s,new BCryptPasswordEncoder().encode("123456"),AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN,ROLE_USER"));
 
         List<GrantedAuthority> authorityLists = AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN,ROLE_USER");
         LoginUser loginUser = new LoginUser(s,new BCryptPasswordEncoder().encode("123456"),authorityLists);

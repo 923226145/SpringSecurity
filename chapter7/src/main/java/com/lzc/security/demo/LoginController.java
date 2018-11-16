@@ -41,4 +41,11 @@ public class LoginController {
     public String loginIndex() throws IOException {
         return "login";
     }
+
+    @GetMapping("/session/invalid")
+    @ResponseBody
+    public String sessionInvalid() {
+        return "用户登录信息已失效，请重新登录";
+    }
+
 }

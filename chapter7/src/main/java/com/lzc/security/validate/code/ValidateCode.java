@@ -1,8 +1,11 @@
 package com.lzc.security.validate.code;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ValidateCode {
+public class ValidateCode implements Serializable {
+
+    private static final long serialVersionUID = 362748403835906031L;
 
     private String code;// 验证码
 

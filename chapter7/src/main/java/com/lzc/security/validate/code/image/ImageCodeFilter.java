@@ -1,5 +1,6 @@
 package com.lzc.security.validate.code.image;
 
+import com.lzc.security.validate.code.ValidateCode;
 import com.lzc.security.validate.code.ValidateCodeProcessor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,6 @@ public class ImageCodeFilter extends OncePerRequestFilter implements Initializin
         urls.add("/authentication/form"); // 登录
 
     }
-
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         boolean action = false;
@@ -57,19 +57,19 @@ public class ImageCodeFilter extends OncePerRequestFilter implements Initializin
     }
 
     private void validate(HttpServletRequest request) {
-        ImageCode imageCodeSession = (ImageCode)request.getSession().getAttribute(ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
+        ValidateCode validateCode = (ValidateCode)request.getSession().getAttribute(ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
         String imageCodeRequest = request.getParameter("imageCode");
         if (imageCodeRequest == null || imageCodeRequest.isEmpty()) {
             throw new ImageCodeException("图片验证码不能为空");
         }
-        if (imageCodeSession == null) {
+        if (validateCode == null) {
             throw new ImageCodeException("验证码不存在");
         }
-        if (imageCodeSession.isExpired()) {
+        if (validateCode.isExpired()) {
             request.getSession().removeAttribute(ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
             throw new ImageCodeException("验证码已过期");
         }
-        if(!imageCodeRequest.equalsIgnoreCase(imageCodeSession.getCode())) {
+        if(!imageCodeRequest.equalsIgnoreCase(validateCode.getCode())) {
             throw new ImageCodeException("验证码错误");
         }
         request.getSession().removeAttribute(ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");

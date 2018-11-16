@@ -2,6 +2,7 @@ package com.lzc.security.config;
 
 import com.lzc.security.config.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.lzc.security.config.authentication.social.qq.QQAuthenticationSecurityConfig;
+import com.lzc.security.session.LzcExpiredSessionStrategy;
 import com.lzc.security.validate.code.image.ImageCodeFilter;
 import com.lzc.security.validate.code.sms.SmsCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 
 import javax.sql.DataSource;
 
@@ -62,7 +64,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(imageCodeFilter, UsernamePasswordAuthenticationFilter.class) // 将ImageCodeFilter过滤器设置在UsernamePasswordAuthenticationFilter之前
                 .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/authentication/*","/login/*","/code/*") // 不需要登录就可以访问
+                .antMatchers("/authentication/*","/login/*","/code/*","/session/invalid") // 不需要登录就可以访问
                 .permitAll()
                 .antMatchers("/user/**").hasAnyRole("USER") // 需要具有ROLE_USER角色才能访问
                 .antMatchers("/admin/**").hasAnyRole("ADMIN") // 需要具有ROLE_ADMIN角色才能访问
@@ -78,7 +80,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                     .tokenRepository(persistentTokenRepository())
                     .tokenValiditySeconds(24*60*60) // 过期秒数
                     .userDetailsService(myUserService)
-
+                .and()
+                    .sessionManagement()
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(false) // 当达到maximumSessions时，true表示不能踢掉前面的登录，false表示踢掉前面的用户
+                    .expiredSessionStrategy(new LzcExpiredSessionStrategy()) // 当达到maximumSessions时，踢掉前面登录用户后的操作
                 ;
         http.apply(smsCodeAuthenticationSecurityConfig);
         http.apply(qqAuthenticationSecurityConfig);
