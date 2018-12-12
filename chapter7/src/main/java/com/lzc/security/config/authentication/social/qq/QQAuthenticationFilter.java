@@ -24,9 +24,9 @@ public class QQAuthenticationFilter extends AbstractAuthenticationProcessingFilt
     // grant_type 由腾讯提供
     private final static String grantType = "authorization_code";
     // client_id 由腾讯提供
-    static final String clientId = "101518082";
+    static final String clientId = "clientId";
     // client_secret 由腾讯提供
-    private final static String clientSecret = "2afe65a57fb3a9a39ff02259d27f1533";
+    private final static String clientSecret = "clientSecret";
     // redirect_uri 腾讯回调地址
     private final static String redirectUri = "http://lizhencheng.xyz/login/qq";
     // 获取 OpenID 的 API 地址
