@@ -3,6 +3,7 @@ package com.lzc.security.validate.code.impl;
 import com.lzc.security.validate.code.ValidateCode;
 import com.lzc.security.validate.code.ValidateCodeGenerator;
 import com.lzc.security.validate.code.ValidateCodeProcessor;
+import com.lzc.security.validate.code.sms.SmsCode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -46,8 +47,12 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
      * @param validateCode 验证码
      */
     private void save(ServletWebRequest request, C validateCode) {
-        ValidateCode c = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
-        request.getRequest().getSession().setAttribute(SESSION_KEY_PREFIX.concat(getProcessorType(request).toUpperCase()), c);
+        if (validateCode instanceof SmsCode) {
+            request.getRequest().getSession().setAttribute(SESSION_KEY_PREFIX.concat(getProcessorType(request).toUpperCase()), validateCode);
+        } else {
+            ValidateCode c = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
+            request.getRequest().getSession().setAttribute(SESSION_KEY_PREFIX.concat(getProcessorType(request).toUpperCase()), c);
+        }
     }
 
     protected abstract void send(ServletWebRequest request, C validateCode) throws Exception;
